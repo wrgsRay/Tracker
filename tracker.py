@@ -13,6 +13,7 @@ class USPS:
         self.agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'
         self.headers = {'user-agent': self.agent}
         self.html = ''
+        # TODO: do requests and soup in init
 
     def status_latest(self):
         global soup
@@ -30,6 +31,7 @@ class USPS:
     @staticmethod
     def detailed_status():
         result = list()
+        # TODO: Solve the issue if the tracking is invalid or empty
         if soup.find(attrs={"class": "status_feed"}) is not None:
             for string in soup.find(attrs={"class": "status_feed"}).stripped_strings:
                 result.append(string)
