@@ -12,6 +12,7 @@ class USPS:
         self.url = 'https://tools.usps.com/go/TrackConfirmAction?tLabels=' + self.awb
         self.agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'
         self.headers = {'user-agent': self.agent}
+        self.current_status = ''
 
     def get_status(self):
         global html
@@ -24,17 +25,16 @@ class USPS:
         except Exception as e:
             print(e)
 
-    @staticmethod
-    def status_latest():
-        current_status = soup.select_one('h2 > strong').string if (soup.select_one('h2 > strong') is not None) \
+    def status_latest(self):
+        self.current_status = soup.select_one('h2 > strong').string if (soup.select_one('h2 > strong') is not None) \
             else 'Not Found'
-        return current_status
+        return self.current_status
 
-    @staticmethod
-    def detailed_status():
+    def detailed_status(self):
         result = list()
-        # TODO: Solve the issue if the tracking is invalid or empty
-        if soup.find(attrs={"class": "status_feed"}) is not None:
+        if self.current_status == 'Delivered':
+            return 'No more info available for delivered packages'
+        elif not soup.find(attrs={"class": "status_feed"}):
             for string in soup.find(attrs={"class": "status_feed"}).stripped_strings:
                 result.append(string)
             result_time = ' '.join(result[0].split())
@@ -46,11 +46,21 @@ class USPS:
 
 
 def main():
-    package_1 = USPS('9405511699000799152259')
+    package_1 = USPS('9405511699000796228506')
     print(package_1.awb)
     package_1.get_status()
     print(package_1.status_latest())
     print(package_1.detailed_status())
+    # package_2 = USPS('LT074946082CN')
+    # print(package_2.awb)
+    # package_2.get_status()
+    # print(package_2.status_latest())
+    # print(package_2.detailed_status())
+    # package_3 = USPS('LT000264475CN')
+    # print(package_3.awb)
+    # package_3.get_status()
+    # print(package_3.status_latest())
+    # print(package_3.detailed_status())
 
 
 if __name__ == '__main__':
