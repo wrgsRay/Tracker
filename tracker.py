@@ -12,15 +12,15 @@ class USPS:
         self.url = 'https://tools.usps.com/go/TrackConfirmAction?tLabels=' + self.awb
         self.agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'
         self.headers = {'user-agent': self.agent}
-        self.html = ''
 
     def get_status(self):
+        global html
         global soup
         res = requests.get(self.url, headers=self.headers)
         try:
             res.raise_for_status()
-            self.html = res.text
-            soup = bs(self.html, 'html.parser')
+            html = res.text
+            soup = bs(html, 'html.parser')
         except Exception as e:
             print(e)
 
